@@ -1,0 +1,111 @@
+<div class="flex bg-[#b7ceef]">
+  {{userData?.author?.name || "NA"}}'s &nbsp;<span class="text-profit">Tradebook</span>
+</div>
+
+<div class="flex m-2">
+  <div class="card flex-1 m-2" style="width: 18rem;">
+    <div class="card-header bg-[#b7ceef]">
+      Capital (A)
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{userData?.cardData?.capital ? userData?.cardData?.capital : 0}} INR</h5>
+    </div>
+  </div>
+  <div class="card flex-1 m-2" style="width: 18rem;">
+    <div class=" card-header bg-[#b7ceef]">
+      PnL (B)
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{userData?.cardData?.pnl ? userData?.cardData?.pnl : 0}} INR</h5>
+    </div>
+  </div>
+  <div class="card flex-1 m-2" style="width: 18rem;">
+    <div class=" card-header bg-[#b7ceef]">
+      Current Balance (A+B)
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{userData?.cardData?.balance ? userData?.cardData?.balance : 0}} INR</h5>
+    </div>
+  </div>
+  <div class="card flex-1 m-2" style="width: 18rem;">
+    <div class=" card-header bg-[#b7ceef]">
+      Gain
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{userData?.cardData?.gain ? userData?.cardData?.gain : 0}} %</h5>
+    </div>
+  </div>
+</div>
+
+<div class="flex m-4 justify-end">
+  <!-- Button trigger modal -->
+  <button type="button" (click)="addTrade()" class="btn btn-primary">
+    {{!showAddTrade ? "Add Trade" : "Show History"}}
+  </button>
+</div>
+
+<ng-template #tradeTable class="flex ">
+  <div class="m-4 tableFixHead">
+    <table class="table table-bordered">
+      <thead>
+        <tr class="bg-[#b7ceef]">
+          <th scope="col">#</th>
+          <th scope="col">Stock/Index</th>
+          <th scope="col">Type</th>
+          <th scope="col">PnL</th>
+          <th scope="col">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let one of userData?.tradeHistory;let i=index;">
+          <th scope="row">{{i + 1}}</th>
+          <td>{{one.name}}</td>
+          <td>{{one.type}}</td>
+          <td [ngClass]="one.direction === '+' ? 'text-profit' : one.direction === '-' ? 'text-loss' : ''">
+            {{one.direction}} {{one.pnl}}</td>
+          <td>{{one.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</ng-template>
+
+<div class="m-2" *ngIf="showAddTrade else tradeTable">
+  <div class="card">
+    <div class="card-header font-bold bg-[#b7ceef]">
+      Enter Trade
+    </div>
+    <div class="card-body">
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" [(ngModel)]="tradePayload.name" name="name" class="form-control" id="name" placeholder="TCS">
+      </div>
+      <div class="mb-3">
+        <label for="type" class="form-label">Type</label>
+        <select [(ngModel)]="tradePayload.type" class="form-select" aria-label="Default select example">
+          <option selected value="OPTIONS">OPTIONS</option>
+          <option value="STOCK">STOCK</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="pnl" class="form-label">PNL</label>
+        <input type="number" [(ngModel)]="tradePayload.pnl" name="pnl" class="form-control" id="pnl" placeholder="TCS">
+      </div>
+      <div class="mb-3">
+        <label for="type" class="form-label">Direction</label>
+        <select [(ngModel)]="tradePayload.direction" class="form-select" aria-label="Default select example">
+          <option selected value="+">+</option>
+          <option value="-">-</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" [(ngModel)]="tradePayload.date" name="date" class="form-control" id="date" placeholder="TCS">
+      </div>
+      <button type="button" (click)="saveTrade(tradePayload)" class="btn btn-primary">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
